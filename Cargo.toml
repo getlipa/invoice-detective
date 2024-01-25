@@ -1,0 +1,13 @@
+[package]
+name = "invoice-detective"
+version = "0.1.0"
+edition = "2021"
+
+default-run = "invoice-detective"
+
+[dependencies]
+anyhow = "1.0.79"
+colored = "2.1.0"
+json = "0.12.4"
+lightning-invoice = "0.29.0"
+rusqlite = "0.29.0"
