@@ -53,7 +53,7 @@ pub fn main() -> Result<()> {
     println!("Dumping to database {DATABASE_PATH} ...");
     dump(&nodes)?;
 
-	println!("Done");
+    println!("Done");
     Ok(())
 }
 
