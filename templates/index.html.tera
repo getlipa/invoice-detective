@@ -1,0 +1,112 @@
+</head>
+
+<body>
+</body>
+
+</html>
+
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>🕵️‍ Invoice Detective</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+        }
+
+        header {
+            background-color: #333;
+            color: #fff;
+            text-align: center;
+            padding: 1em;
+        }
+
+        main {
+            padding: 20px;
+        }
+
+        footer {
+            background-color: #333;
+            color: #fff;
+            text-align: center;
+            padding: 1em;
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+        }
+
+		.card {
+            width: 300px;
+            border: 1px solid #ccc;
+            overflow: hidden;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .card-header {
+            background-color: #7b7b7b;
+            color: #fff;
+            padding: 10px;
+            text-align: left;
+     	font-size: 120%;
+		font-weight: bold;
+        }
+
+        .card-body {
+            padding: 20px;
+        }
+        .invoice {
+        padding: 20px;
+     		font-size: 180%;
+		font-family: Monospace;
+        }
+    </style>
+	<script>
+        function redirectToInputValue() {
+            var invoice = document.getElementById('invoice').value;
+            window.location.href = '/' + encodeURIComponent(invoice);
+        }
+    </script>
+</head>
+
+<body>
+    <header>
+	  <h1>🕵️‍ Invoice Detective</h1>
+    </header>
+
+    <main>
+      <form action="#" method="post" onsubmit="redirectToInputValue(); return false;">
+        <label for="invoice">BOLT-11 Invoice:</label>
+        <input type="text" id="invoice" name="invoice" required />
+        <input type="submit" value="Submit" />
+      </form>
+	  <div class="invoice">{{ invoice }}</div>
+    <div class="card">
+        <div class="card-header">🔎 Investigative findings</div>
+        <div class="card-body">
+            <p>{{ recipient }}</p>
+        </div>
+    </div>
+    <div class="card">
+        <div class="card-header">🧾 Evidences</div>
+        <div class="card-body">
+          <p>Pay to public node <a href="{{ mempool_space_base_url }}/{{ node.id }}" target="_blank">{{ node.alias }}&nbsp;🡵</a></p>
+		  <ul>
+			<li>via public node <a href="{{ mempool_space_base_url }}/{{ node.id }}" target="_blank">{{ node.alias }}&nbsp;🡵</a></li>
+          </ul>  
+        </div>
+    </div>
+
+    </main>
+
+    <footer>
+        <p>Github page</p>
+    </footer>
+</body>
+
+</html>

@@ -29,7 +29,7 @@ fn main() -> Result<()> {
     let node_name = graph_database.query_name(pubkey.clone())?;
     let route_hints = process_route_hints(&invoice.route_hints(), &graph_database)?;
 
-    println!("🕵️‍  {}", " Investigative findings ".reversed());
+    println!("🔎 {}", " Investigative findings ".reversed());
     let recipient_decoder = RecipientDecoder::new();
     let recipient = recipient_decoder.decode(&pubkey, &route_hints);
     let recipient = format_recipient_node(&recipient);
