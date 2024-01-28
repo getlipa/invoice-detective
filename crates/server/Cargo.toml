@@ -4,4 +4,8 @@ version = "0.1.0"
 edition = "2021"
 
 [dependencies]
-invoice-detective = { version = "0.1.0", path = "../invoice-detective" }
+invoice-detective = { path = "../invoice-detective" }
+
+rocket = { version = "0.5.0" }
+rocket_dyn_templates = { version = "0.1.0", features = ["tera"] }
+serde = "1.0.195"
