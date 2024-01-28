@@ -12,7 +12,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<title>🕵️‍ Invoice Detective</title>
+    <title>🕵️‍ Invoice Detective</title>
     <style>
         body {
             margin: 0;
@@ -41,8 +41,7 @@
             width: 100%;
         }
 
-		.card {
-            width: 300px;
+        .card {
             border: 1px solid #ccc;
             overflow: hidden;
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
@@ -53,20 +52,20 @@
             color: #fff;
             padding: 10px;
             text-align: left;
-     	font-size: 120%;
-		font-weight: bold;
+            font-size: 120%;
+            font-weight: bold;
         }
 
         .card-body {
             padding: 20px;
         }
         .invoice {
-        padding: 20px;
-     		font-size: 180%;
-		font-family: Monospace;
+            padding: 20px;
+            font-size: 180%;
+            font-family: Monospace;
         }
     </style>
-	<script>
+    <script>
         function redirectToInputValue() {
             var invoice = document.getElementById('invoice').value;
             window.location.href = '/' + encodeURIComponent(invoice);
@@ -76,7 +75,7 @@
 
 <body>
     <header>
-	  <h1>🕵️‍ Invoice Detective</h1>
+      <h1>🕵️‍ Invoice Detective</h1>
     </header>
 
     <main>
@@ -85,7 +84,7 @@
         <input type="text" id="invoice" name="invoice" required />
         <input type="submit" value="Submit" />
       </form>
-	  <div class="invoice">{{ invoice }}</div>
+      <div class="invoice">{{ invoice }}</div>
     <div class="card">
         <div class="card-header">🔎 Investigative findings</div>
         <div class="card-body">
@@ -95,17 +94,30 @@
     <div class="card">
         <div class="card-header">🧾 Evidences</div>
         <div class="card-body">
-          <p>Pay to {{ payee }}</p>
-		  <ul>
-			{% for hint in route_hints %}
-			<li>
-		      via
-			  {% for hop in hint %}
-			  {{ hop }}
-			  {% endfor %}
-			</li>
-			{% endfor %}
-		  </ul>
+          <p>
+            Pay to
+            {% if payee.is_announced %}
+            public node
+            <a href="{{ mempool_space_base_url }}/{{ payee.pubkey }}" target="_blank">{{ payee.alias }}&nbsp;🡵</a>
+            {% else %}
+            private node <b>{{ payee.pubkey }}</b>
+            {% endif %}
+          </p>
+          <ul>
+            {% for hint in route_hints %}
+            <li>
+              via
+              {% for hop in hint %}
+                  {% if hop.is_announced %}
+                public node
+                <a href="{{ mempool_space_base_url }}/{{ hop.pubkey }}" target="_blank">{{ hop.alias }}&nbsp;🡵</a>
+              {% else %}
+              private node <b>{{ hop.pubkey }}</b>
+              {% endif %}
+              {% endfor %}
+            </li>
+            {% endfor %}
+          </ul>
         </div>
     </div>
 
