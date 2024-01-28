@@ -1,6 +1,7 @@
 use crate::node::Node;
+use serde::Serialize;
 
-#[derive(PartialEq, Clone, Debug)]
+#[derive(PartialEq, Clone, Debug, Serialize)]
 pub enum ServiceKind {
     BusinessWallet,
     ConsumerWallet,
@@ -8,7 +9,7 @@ pub enum ServiceKind {
     Lsp,
 }
 
-#[derive(PartialEq, Clone, Debug)]
+#[derive(PartialEq, Clone, Debug, Serialize)]
 pub struct Provider {
     pub service: ServiceKind,
     pub name: String,
@@ -25,7 +26,7 @@ impl Provider {
     }
 }
 
-#[derive(PartialEq, Debug)]
+#[derive(PartialEq, Debug, Serialize)]
 pub enum RecipientNode {
     Custodial { custodian: Provider },
     NonCustodial { id: String, lsp: Provider },

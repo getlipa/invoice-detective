@@ -1,131 +1,126 @@
-</head>
-
-<body>
-</body>
-
-</html>
-
-
 <!DOCTYPE html>
 <html lang="en">
-
-<head>
+  <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>🕵️‍ Invoice Detective</title>
     <style>
-        body {
-            margin: 0;
-            padding: 0;
-            font-family: Arial, sans-serif;
-        }
+      body {
+          margin: 0;
+          padding: 0;
+          font-family: Arial, sans-serif;
+      }
 
-        header {
-            background-color: #333;
-            color: #fff;
-            text-align: center;
-            padding: 1em;
-        }
+      header {
+          background-color: #333;
+          color: #fff;
+          text-align: center;
+          padding: 0.1em;
+      }
 
-        main {
-            padding: 20px;
-        }
+      main {
+          padding: 20px;
+      }
 
-        footer {
-            background-color: #333;
-            color: #fff;
-            text-align: center;
-            padding: 1em;
-            position: fixed;
-            bottom: 0;
-            width: 100%;
-        }
+      footer {
+          background-color: #333;
+          color: #fff;
+          text-align: center;
+          padding: 1em;
+          position: fixed;
+          bottom: 0;
+          width: 100%;
+      }
 
-        .card {
-            border: 1px solid #ccc;
-            overflow: hidden;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-        }
+      .card {
+          border: 1px solid #ccc;
+          overflow: hidden;
+          box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      }
 
-        .card-header {
-            background-color: #7b7b7b;
-            color: #fff;
-            padding: 10px;
-            text-align: left;
-            font-size: 120%;
-            font-weight: bold;
-        }
+      .card-header {
+          background-color: #7b7b7b;
+          color: #fff;
+          padding: 10px;
+          text-align: left;
+          font-size: 120%;
+          font-weight: bold;
+      }
 
-        .card-body {
-            padding: 20px;
-        }
-        .invoice {
-            padding: 20px;
-            font-size: 180%;
-            font-family: Monospace;
-        }
+      .card-body {
+          padding: 10px;
+      }
+
+      .invoice {
+          font-size: 120%;
+      }
     </style>
     <script>
-        function redirectToInputValue() {
-            var invoice = document.getElementById('invoice').value;
-            window.location.href = '/' + encodeURIComponent(invoice);
-        }
+      function redirectToInputValue() {
+          var invoice = document.getElementById('invoice').value;
+          window.location.href = '/' + encodeURIComponent(invoice);
+      }
     </script>
-</head>
+  </head>
 
-<body>
-    <header>
+  <body>
+	<header>
       <h1>🕵️‍ Invoice Detective</h1>
-    </header>
+	</header>
 
-    <main>
-      <form action="#" method="post" onsubmit="redirectToInputValue(); return false;">
-        <label for="invoice">BOLT-11 Invoice:</label>
-        <input type="text" id="invoice" name="invoice" required />
-        <input type="submit" value="Submit" />
-      </form>
-      <div class="invoice">{{ invoice }}</div>
-    <div class="card">
-        <div class="card-header">🔎 Investigative findings</div>
-        <div class="card-body">
-            <p>{{ recipient }}</p>
-        </div>
-    </div>
-    <div class="card">
-        <div class="card-header">🧾 Evidences</div>
-        <div class="card-body">
-          <p>
-            Pay to
-            {% if payee.is_announced %}
-            public node
-            <a href="{{ mempool_space_base_url }}/{{ payee.pubkey }}" target="_blank">{{ payee.alias }}&nbsp;🡵</a>
-            {% else %}
-            private node <b>{{ payee.pubkey }}</b>
-            {% endif %}
-          </p>
-          <ul>
-            {% for hint in route_hints %}
-            <li>
-              via
-              {% for hop in hint %}
-                  {% if hop.is_announced %}
-                public node
-                <a href="{{ mempool_space_base_url }}/{{ hop.pubkey }}" target="_blank">{{ hop.alias }}&nbsp;🡵</a>
-              {% else %}
-              private node <b>{{ hop.pubkey }}</b>
-              {% endif %}
-              {% endfor %}
-            </li>
-            {% endfor %}
-          </ul>
-        </div>
-    </div>
+	<main>
+      <div class="card">
+		<div class="card-body">
+		  <form action="#" method="post" onsubmit="redirectToInputValue(); return false;">
+			<label for="invoice">BOLT-11 Invoice:</label>
+			<input type="text" id="invoice" name="invoice" required />
+			<input type="submit" value="Submit" />
+		  </form>
+		</div>
+	  </div>
+      <div class="card">
+		<div class="card-header">🚀 Examples</div>
+		<div class="card-body">
+		  <ol>
+			<li>
+			  <a href="lnbc120n1pjcxr98dp923jhxarfdenjqur9dejxjmn8ypcxz7tdv4h8gpp5p0547ufczxajsnzwylyw082p2mz6cwswmr0z0uyhmgpfn06gc7tqxqrrsssp546n87knlt8hedp9cp30rkgtcduw2hrr00ex62msawwzfqszh0k7s9qrsgqcqzysrzjqfj2v2jrqltsrsz2g6v5ee04xga3eg5vsrrxku7xx8dukzvs6m5r2avk07w5uftf4sqqqqlgqqqqqzsqygs6sp6j4mwstpvjd648cmtndazpnfvhnsh9ff8frgrkmx3jarm0vxyqf822a2d9sefxzyqwlm5epvtcyj5rjpu09lsy4jffu7t0a7xxgqpzsw6v">
+				lnbc120n1pjcxr9…
+			  </a>
+			</li>
+			<li>
+			  <a href="lnbc1u1pj62kd6pp557unu8u02cg7nqnsj5rnrgsrzctw7f85g9wr6wu3hhwa5qacmhtqdqqcqzzsxqyz5vqsp5arf47cesn7xyjc7wgq7fl288rczl45j4wql5un4tam8jcuchmh2s9qyyssqmzxkcqk9cpau6fu6zv5n5rz9znuuwwevxz073y8f37yv3qrpp3dpwhruf47206q3rv2st2d7jc2v8nxy7pa6ad7s8rsh9zzq5g33t3qq7d5huu">
+				lnbc1u1pj62kd6p…
+			  </a>
+			</li>
+			<li>
+			  <a href="LNBC1140N1PJ64FV9PP5C73PHSUA89FAMFEU34NRZCS5QS8WPV303HYGSJJ89LFSN3RD04FQDQL2PSHJGPS9CCRGGZRFPRZQTFQD35HQCGCQZZSXQYZ5VQSP5M6GR4X8389DV3MHLQ9RSNHFZQ4ZVTLH8WTLYQRWPE80PQ9505AQQ9QYYSSQ80HAM8AHTSVTZ8LX5WDYSS4RGNRRQSPZ6Q40USVRTT5EFKT8KGVPZTT0X0KLNPMDP6W2CVELS3T44JZUCPHLN0TU43L7C2GR82KJX2CQNW90TQ">
+				LNBC1140N1PJ64F…
+			  </a>
+			</li>
+			<li>
+			  <a href="lnbc10u1pj6jthgpp53z7wm9khh2r0tkkc8qut7rr8ysphemym49ex88gz5yphs02s7a5qdqhfdexz6m9dcsygetsdaekjaqcqzysxqrrsssp5l2ptqg4sj6dmnze65etlsdv0lghtjql5jekw2yj036k0znpv0a4s9qyyssq54a007cdc37xmdgn8fwsgjhu9qac5dvsyacs5z4ghv4mkkdsm7tq5tl5d8h492a8eqv2hpjat2axmukmsam388a5m5aejdxu7fmk7qsq99g28p">
+				lnbc10u1pj6jthg…
+			  </a>
+			</li>
+			<li>
+			  <a href="lnbc100u1pj6ljjxsp5mk2e0n7vjcuuc752ljnm4zve23a3c3kdq5qxpz5pane0k5dqzjespp53zxjj3sug24tj6wlwlrlfu8k4676s55kj4cr2lw6mntnhk4mh8tsdpz2djkuepqw3hjqnpdgf2yxgrpv3j8yetnwvxqyp2xqcqz959qxpqysgqp43g45mqyk00cj7580dyz8gaevj6dcg7chmjz3gcmdwkcfv0qm5rt4h62fnvxng6nyweapfs7cc5rafne2mqvkun69lxjrus6gvvawspzs6740">
+				lnbc100u1pj6ljj…
+			  </a>
+			</li>
+			<li>
+			  <a href="lnbc5m1pj6tgnhsp5gsfazhx0c5gfcfmxh38ag5lyrshk9h4djzrejldvmfe49vxpyvyqpp59p000w04t5xhc9ch7lj909wtlqmgrcjxymcnnn4gc9xmux7cgnrsdqqnp4qwh05slmksqfkgdyz2wst9fewjmah2amldg3jg2pqzqgvr723mslqxqrrsxcqzzn9qyysgqcd2avdg6gt7j24tjycz0r38xr5r809tczelvyjr52cgy32z7nzs9wsmdxxws4xx8s7s8vv3w5qgfslcg608vj0ys2dqvqg227m75dwcq6z898f">
+				lnbc5m1pj6tgnhs…
+			  </a>
+			</li>
+			<li>
+			  <a href="lnbc27u1pjmp6jusp55kapartsh8jr2dvg538hnsqcaeaqyaujjj0qmpqx8cqzwxl4y3eqpp55ujktk0pscwe7m4mpwwxv06epxzurmn6d0vlzc3cggjrsmshretqhp5uwcvgs5clswpfxhm7nyfjmaeysn6us0yvjdexn9yjkv3k7zjhp2sxq9z0rgqcqpnrzjqtahnsafzgwctvfxdpaazy02a0ep4242tjljxt3tdsaalzqr7sqcyryy8sqqxssqqyqqqfcsqqqqqzsq9q9qxpqysgqwg7j72jjx873aepqp0qaslwp3887ps2cc0a3zteus3p5zd9fmzxpy5ythgny7t4glt8ar7g2gda2wv9zc4a3jxgv9qynqxw08mnn0ncqp0cyz8">
+				lnbc27u1pjmp6ju…
+			  </a>
+			</li>
+		  </ol>
+		</div>
+      </div>
 
     </main>
-
-    <footer>
-        <p>Github page</p>
-    </footer>
-</body>
-
+  </body>
 </html>

@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🕵️‍ Invoice Detective</title>
+    <style>
+      body {
+          margin: 0;
+          padding: 0;
+          font-family: Arial, sans-serif;
+      }
+
+      header {
+          background-color: #333;
+          color: #fff;
+          text-align: center;
+          padding: 0.1em;
+      }
+
+      main {
+          padding: 20px;
+      }
+
+      footer {
+          background-color: #333;
+          color: #fff;
+          text-align: center;
+          padding: 1em;
+          position: fixed;
+          bottom: 0;
+          width: 100%;
+      }
+
+      .card {
+          border: 1px solid #ccc;
+          overflow: hidden;
+          box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      }
+
+      .card-header {
+          background-color: #7b7b7b;
+          color: #fff;
+          padding: 10px;
+          text-align: left;
+          font-size: 120%;
+          font-weight: bold;
+      }
+
+      .card-body {
+          padding: 10px;
+      }
+
+      .invoice {
+          word-wrap: break-word;
+      }
+	</style>
+    <script>
+      function redirectToInputValue() {
+          var invoice = document.getElementById('invoice').value;
+          window.location.href = '/' + encodeURIComponent(invoice);
+      }
+    </script>
+  </head>
+
+  <body>
+	<header>
+      <h1>🕵️‍ Invoice Detective</h1>
+	</header>
+
+	<main>
+      <div class="card">
+		<div class="card-body">
+		  <form action="#" method="post" onsubmit="redirectToInputValue(); return false;">
+			<label for="invoice">BOLT-11 Invoice:</label>
+			<input type="text" id="invoice" name="invoice" required />
+			<input type="submit" value="Submit" />
+		  </form>
+		</div>
+	  </div>
+      <div class="card">
+		<div class="card-header">🧾 Invoice</div>
+		<div class="card-body">
+		  <p class="invoice">{{ invoice }}</p>
+		</div>
+	  </div>
+      <div class="card">
+		<div class="card-header">🔎 Investigative findings</div>
+		<div class="card-body">
+		  <p>
+			{{ custody }} {{ service }}
+			{% if name %} <b>{{ name }}</b> {% endif %}
+			{% if id %} with id <b>{{ id }}</b> {% endif %}
+		  </p>
+		</div>
+      </div>
+      <div class="card">
+		<div class="card-header">🗃️ Evidences</div>
+		<div class="card-body">
+          <p>
+            Pay to
+            {% if payee.is_announced %}
+            public node
+            <a href="{{ mempool_space_base_url }}/{{ payee.pubkey }}" target="_blank">{{ payee.alias }}&nbsp;🡵</a>
+            {% else %}
+            private node <b>{{ payee.pubkey }}</b>
+            {% endif %}
+          </p>
+          <ul>
+            {% for hint in route_hints %}
+            <li>
+              via
+              {% for hop in hint %}
+              {% if hop.is_announced %}
+              public node
+              <a href="{{ mempool_space_base_url }}/{{ hop.pubkey }}" target="_blank">{{ hop.alias }}&nbsp;🡵</a>
+              {% else %}
+              private node <b>{{ hop.pubkey }}</b>
+              {% endif %}
+              {% endfor %}
+            </li>
+            {% endfor %}
+          </ul>
+        </div>
+      </div>
+
+    </main>
+  </body>
+</html>
