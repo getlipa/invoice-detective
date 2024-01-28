@@ -1,0 +1,10 @@
+[workspace]
+
+members = [
+    "cli",
+    "graph-builder",
+    "invoice-detective",
+    "server",
+]
+
+resolver = "2"
