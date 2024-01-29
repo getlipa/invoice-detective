@@ -16,7 +16,7 @@ fn main() -> Result<()> {
     println!("   Recipient: {recipient}");
 
     println!();
-    println!("🗃️ {}", " Evidences ".reversed());
+    println!("🗃️  {}", " Evidences ".reversed());
     println!("   Pay to {}", format_node_name(&findings.payee));
     for hint in findings.route_hints {
         let hint = hint

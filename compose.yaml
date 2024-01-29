@@ -1,0 +1,6 @@
+version: "3"
+services:
+  server:
+    build: .
+    restart: unless-stopped
+    network_mode: "host"
