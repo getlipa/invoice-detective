@@ -1,6 +1,7 @@
 use invoice_detective::{InvoiceDetective, RecipientNode, ServiceKind};
 use rocket::{get, launch, routes};
 use rocket_dyn_templates::{context, Template};
+use thousands::Separable;
 
 #[get("/")]
 fn index() -> Template {
@@ -38,11 +39,27 @@ fn invoice(invoice: &str) -> Template {
         RecipientNode::Unknown => ("Unknown", "", String::new(), String::new()),
     };
 
+    let amount = format_msat(findings.details.amount_msat);
+    let description = findings.details.description;
+
     let mempool_space_base_url = "https://mempool.space/lightning/node";
     Template::render(
         "invoice",
-        context! { invoice, mempool_space_base_url, route_hints, payee, custody, service, name, id },
+        context! { amount, description, invoice, mempool_space_base_url, route_hints, payee, custody, service, name, id },
     )
+}
+
+fn format_msat(msat: Option<u64>) -> String {
+    match msat {
+        None => String::new(),
+        Some(msat) if msat % 1000 == 0 => format!("{} sats", (msat / 1000).separate_with_commas()),
+        Some(msat) => {
+            let sat = msat / 1000;
+            let sat = sat.separate_with_commas();
+            let msat = msat % 1000;
+            format!("{sat}.{msat:03} sats")
+        }
+    }
 }
 
 #[launch]

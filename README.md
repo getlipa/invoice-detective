@@ -23,7 +23,8 @@ it is reasonable to conclude that the recipient is utilizing the non-custodial *
 
 ## TODOs
 - [ ] detect Network
+- [ ] handle errors
 - [ ] use tera functions
-- [ ] display more details (expritration time, description)
+- [ ] display more details (expritration time)
 - [ ] move css
 - [ ] server static files

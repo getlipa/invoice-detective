@@ -59,6 +59,20 @@
 		  text-align: center;
 	  }
 
+	  table {
+          border-collapse: collapse;
+          width: 100%;
+      }
+      th, td {
+          border: 1px solid #ddd;
+          padding: 8px;
+          text-align: left;
+      }
+	  .leftTableColumn {
+          text-align: right;
+	      width: 10px;
+	  }
+
 	  #invoiceInput {
           width: 100%;
       }
@@ -127,6 +141,24 @@
           </ul>
         </div>
       </div>
+      <div class="card">
+		<div class="card-header">📋 Details</div>
+		<div class="card-body">
+		  <table>
+			<tr>
+			  <td class="leftTableColumn">Amount</td>
+			  <td>{% if amount %} {{ amount }} {% else %} <i>no amount</i> {% endif %}</td>
+			</tr>
+			<tr>
+			  <td class="leftTableColumn">Description</td>
+			  <td>
+				{% if description %} {{ description }} {% else %} <i>no description</i> {% endif %}
+			  </td>
+			</tr>
+		  </table>
+		</div>
+      </div>
+
 	  <br/>
 	  <div><a href="/">← back</a></div>
 
