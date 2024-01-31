@@ -11,10 +11,19 @@ use anyhow::Result;
 use lightning_invoice::{Bolt11Invoice, RouteHint};
 
 #[derive(Debug)]
+pub struct InvoiceDetails {
+    pub description: String,
+    pub amount_msat: Option<u64>,
+    // pub date: u64,
+    // pub expires_at: u64,
+}
+
+#[derive(Debug)]
 pub struct InvestigativeFindings {
     pub recipient: RecipientNode,
     pub payee: Node,
     pub route_hints: Vec<Vec<Node>>,
+    pub details: InvoiceDetails,
 }
 
 pub struct InvoiceDetective {
@@ -34,8 +43,8 @@ impl InvoiceDetective {
     }
 
     pub fn investigate(&self, invoice: &str) -> Result<InvestigativeFindings> {
-        let invoice = invoice.parse::<Bolt11Invoice>()?;
-        let _description = invoice.description().to_string();
+        let invoice = invoice.trim().parse::<Bolt11Invoice>()?;
+        let description = invoice.description().to_string();
         let pubkey = invoice
             .payee_pub_key()
             .copied()
@@ -45,10 +54,16 @@ impl InvoiceDetective {
         let route_hints = self.process_route_hints(&invoice.route_hints())?;
         let recipient = self.recipient_decoder.decode(&pubkey, &route_hints);
 
+        let details = InvoiceDetails {
+            description,
+            amount_msat: invoice.amount_milli_satoshis(),
+        };
+
         Ok(InvestigativeFindings {
             recipient,
             payee,
             route_hints,
+            details,
         })
     }
 

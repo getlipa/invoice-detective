@@ -2,6 +2,7 @@ use anyhow::{anyhow, Result};
 use colored::Colorize;
 use invoice_detective::{InvoiceDetective, Node, RecipientNode, ServiceKind};
 use std::env;
+use thousands::Separable;
 
 fn main() -> Result<()> {
     let invoice = env::args()
@@ -27,7 +28,27 @@ fn main() -> Result<()> {
         println!("     via {hint}");
     }
 
+    let details = findings.details;
+    let amount = format_msat(details.amount_msat);
+    println!();
+    println!("📋 {}", " Details ".reversed());
+    println!("     Amount: {amount}");
+    println!("Desctiption: {}", details.description.italic());
+
     Ok(())
+}
+
+fn format_msat(msat: Option<u64>) -> String {
+    match msat {
+        None => "no amount".to_string(),
+        Some(msat) if msat % 1000 == 0 => format!("{} sats", (msat / 1000).separate_with_commas()),
+        Some(msat) => {
+            let sat = msat / 1000;
+            let sat = sat.separate_with_commas();
+            let msat = msat % 1000;
+            format!("{sat}.{msat:03} sats")
+        }
+    }
 }
 
 fn format_node_name(node: &Node) -> String {
