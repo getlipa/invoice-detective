@@ -54,10 +54,18 @@
       .invoice {
           font-size: 120%;
       }
+
+	  .form {
+		  text-align: center;
+	  }
+
+	  #invoiceInput {
+          width: 100%;
+      }
     </style>
     <script>
       function redirectToInputValue() {
-          var invoice = document.getElementById('invoice').value;
+          var invoice = document.getElementById('invoiceInput').value.trim();
           window.location.href = '/' + encodeURIComponent(invoice);
       }
     </script>
@@ -71,9 +79,11 @@
 	<main>
       <div class="card">
 		<div class="card-body">
-		  <form action="#" method="post" onsubmit="redirectToInputValue(); return false;">
-			<label for="invoice">BOLT-11 Invoice:</label>
-			<input type="text" id="invoice" name="invoice" required />
+		  <form class="form" action="#" method="post" onsubmit="redirectToInputValue(); return false;">
+			<label for="invoiceInput">BOLT-11 Invoice:</label>
+			<br/>
+			<textarea rows="6" id="invoiceInput" name="invoice" required></textarea>
+			<br/>
 			<input type="submit" value="Submit" />
 		  </form>
 		</div>
