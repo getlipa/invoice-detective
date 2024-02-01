@@ -26,7 +26,8 @@
           background-color: #333;
           color: #fff;
           text-align: center;
-          padding: 1em;
+          padding-top: 1em;
+          padding-bottom: 1em;
           bottom: 0;
           width: 100%;
       }

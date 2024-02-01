@@ -34,7 +34,7 @@ fn invoice(invoice: &str) -> Template {
             "Non-custodial",
             format_service_kind(&lsp.service),
             lsp.name,
-            "Wrapped invoice".to_string(),
+            String::new(),
         ),
         RecipientNode::Unknown => ("Unknown", "", String::new(), String::new()),
     };
