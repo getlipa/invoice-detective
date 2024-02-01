@@ -27,7 +27,6 @@
           color: #fff;
           text-align: center;
           padding: 1em;
-          position: fixed;
           bottom: 0;
           width: 100%;
       }
@@ -163,5 +162,9 @@
 	  <div><a href="/">← back</a></div>
 
     </main>
+
+	<footer>
+	  Github page
+	</footer>
   </body>
 </html>

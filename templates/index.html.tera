@@ -27,7 +27,6 @@
           color: #fff;
           text-align: center;
           padding: 1em;
-          position: fixed;
           bottom: 0;
           width: 100%;
       }
@@ -88,6 +87,40 @@
 		  </form>
 		</div>
 	  </div>
+
+      <div class="card">
+		<div class="card-body">
+		  <div class="card-header">📖 About</div>
+		  <div class="card-body">
+Invoice Detective is a Rust library and a service designed to deduce
+the recipient of a lightning payment. By looking at the details of the
+provided BOLT-11 lightning invoice and leveraging some knowledge of the
+lightning network graph. Invoice Detective identifies whether the payee
+is a user of a non-custodial wallet, custodial exchange, or something
+else.
+		  </div>
+		</div>
+
+		<div class="card-body">
+		  <div class="card-header">🔧 How it works</div>
+		  <div class="card-body">
+<p>A lightning invoice is a set of payment instructions which has the
+destination as a public key of the recipient node. If it is a well known
+node like <a
+href="https://mempool.space/lightning/node/035e4ff418fc8b5554c5d9eea66396c227bd429a3251c8cbc711002ba215bfc226">WalletOfSatoshi.com</a>
+it is reasonable to infer that the recipient is a user of the custodial
+<strong>Wallet of Satoshi</strong>.</p>
+<p>In more complex scenarios, especially prevalent in mobile wallets
+where the recipient node has no announced channels nor a reachable
+address, lightning invoices incorporate additional routing details, such
+as the LSP node public key. When the LSP is associated with a well known
+node like <a
+href="https://mempool.space/lightning/node/03864ef025fde8fb587d989186ce6a4a186895ee44a926bfc370e2c366597a3f8f">ACINQ</a>,
+it is reasonable to conclude that the recipient is utilizing the
+non-custodial <strong>Phoenix</strong> wallet.</p>
+		</div>
+	  </div>
+
       <div class="card">
 		<div class="card-header">🚀 Examples</div>
 		<div class="card-body">
@@ -132,5 +165,9 @@
       </div>
 
     </main>
+
+	<footer>
+	  Github page
+	</footer>
   </body>
 </html>
