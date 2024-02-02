@@ -31,6 +31,9 @@
           bottom: 0;
           width: 100%;
       }
+	  footer a {
+		  color: #55f;
+	  }
 
       .card {
           border: 1px solid #ccc;
@@ -168,7 +171,7 @@ non-custodial <strong>Phoenix</strong> wallet.</p>
     </main>
 
 	<footer>
-	  Github page
+	  <a href="https://github.com/andrei-21/invoice-detective">Github page</a>
 	</footer>
   </body>
 </html>

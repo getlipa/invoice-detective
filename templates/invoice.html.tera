@@ -17,6 +17,10 @@
           text-align: center;
           padding: 0.1em;
       }
+	  header a {
+          color: #fff;
+		  text-decoration: none;
+	  }
 
       main {
           padding: 20px;
@@ -31,6 +35,9 @@
           bottom: 0;
           width: 100%;
       }
+	  footer a {
+		  color: #55f;
+	  }
 
       .card {
           border: 1px solid #ccc;
@@ -72,6 +79,10 @@
           text-align: right;
 	      width: 10px;
 	  }
+	  .empty {
+          color: #555;
+		  font-style: italic;
+	  }
 
 	  #invoiceInput {
           width: 100%;
@@ -87,7 +98,7 @@
 
   <body>
 	<header>
-      <h1>🕵️‍ Invoice Detective</h1>
+      <h1><a href="/">🕵️‍ Invoice Detective</a></h1>
 	</header>
 
 	<main>
@@ -147,12 +158,12 @@
 		  <table>
 			<tr>
 			  <td class="leftTableColumn">Amount</td>
-			  <td>{% if amount %} {{ amount }} {% else %} <i>no amount</i> {% endif %}</td>
+			  <td>{% if amount %} {{ amount }} {% else %} <span class="empty">empty</span> {% endif %}</td>
 			</tr>
 			<tr>
 			  <td class="leftTableColumn">Description</td>
 			  <td>
-				{% if description %} {{ description }} {% else %} <i>no description</i> {% endif %}
+				{% if description %} {{ description }} {% else %} <span class="empty">empty</span> {% endif %}
 			  </td>
 			</tr>
 		  </table>
@@ -165,7 +176,7 @@
     </main>
 
 	<footer>
-	  Github page
+	  <a href="https://github.com/andrei-21/invoice-detective">Github page</a>
 	</footer>
   </body>
 </html>

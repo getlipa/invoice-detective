@@ -28,3 +28,5 @@ it is reasonable to conclude that the recipient is utilizing the non-custodial *
 - [ ] display more details (expritration time)
 - [ ] move css
 - [ ] server static files
+- [ ] auto dark mode
+- [ ] footer is wider on mobile screen than it should be
