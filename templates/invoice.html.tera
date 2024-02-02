@@ -84,6 +84,20 @@
 		  font-style: italic;
 	  }
 
+	  .warning-container {
+            background-color: #ffc107;
+            border: 2px solid #ffca28;
+            border-radius: 5px;
+            padding: 5px;
+            text-align: center;
+            max-width: 400px;
+            width: 100%;
+        }
+
+      .warning-icon {
+            font-size: 36px;
+            color: #ff9800;
+      }
 	  #invoiceInput {
           width: 100%;
       }
@@ -116,11 +130,19 @@
       <div class="card">
 		<div class="card-header">🔎 Investigative findings</div>
 		<div class="card-body">
+		  {% if network != "Mainnet" %}
+		  <div class="warning-container">
+			<span class="warning-icon">&#9888;</span>
+			<h2>Warning</h2>
+			<p>Recipient detection is implemented only for <b>Mainnet</b>.</p>
+		  </div>
+		  {% else %}
 		  <p>
 			{{ custody }} {{ service }}
 			{% if name %} <b>{{ name }}</b> {% endif %}
 			{% if id %} with id <b>{{ id }}</b> {% endif %}
 		  </p>
+		  {% endif %}
 		</div>
       </div>
       <div class="card">
@@ -156,6 +178,10 @@
 		<div class="card-header">📋 Details</div>
 		<div class="card-body">
 		  <table>
+			<tr>
+			  <td class="leftTableColumn">Network</td>
+			  <td> {{ network }} </tb>
+			</tr>
 			<tr>
 			  <td class="leftTableColumn">Amount</td>
 			  <td>{% if amount %} {{ amount }} {% else %} <span class="empty">empty</span> {% endif %}</td>

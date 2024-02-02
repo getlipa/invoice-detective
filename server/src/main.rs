@@ -41,11 +41,12 @@ fn invoice(invoice: &str) -> Template {
 
     let amount = format_msat(findings.details.amount_msat);
     let description = findings.details.description;
+    let network = findings.details.network;
 
     let mempool_space_base_url = "https://mempool.space/lightning/node";
     Template::render(
         "invoice",
-        context! { amount, description, invoice, mempool_space_base_url, route_hints, payee, custody, service, name, id },
+        context! { amount, network, description, invoice, mempool_space_base_url, route_hints, payee, custody, service, name, id },
     )
 }
 

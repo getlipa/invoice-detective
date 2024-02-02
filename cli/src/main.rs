@@ -32,6 +32,7 @@ fn main() -> Result<()> {
     let amount = format_msat(details.amount_msat);
     println!();
     println!("📋 {}", " Details ".reversed());
+    println!("    Network: {}", details.network);
     println!("     Amount: {amount}");
     println!("Desctiption: {}", details.description.italic());
 
@@ -40,7 +41,7 @@ fn main() -> Result<()> {
 
 fn format_msat(msat: Option<u64>) -> String {
     match msat {
-        None => "no amount".to_string(),
+        None => "empty".to_string(),
         Some(msat) if msat % 1000 == 0 => format!("{} sats", (msat / 1000).separate_with_commas()),
         Some(msat) => {
             let sat = msat / 1000;

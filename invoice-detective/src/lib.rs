@@ -8,10 +8,11 @@ use crate::recipient::RecipientDecoder;
 pub use crate::recipient::{RecipientNode, ServiceKind};
 
 use anyhow::Result;
-use lightning_invoice::{Bolt11Invoice, RouteHint};
+use lightning_invoice::{Bolt11Invoice, Currency, RouteHint};
 
 #[derive(Debug)]
 pub struct InvoiceDetails {
+    pub network: &'static str,
     pub description: String,
     pub amount_msat: Option<u64>,
     // pub date: u64,
@@ -54,7 +55,16 @@ impl InvoiceDetective {
         let route_hints = self.process_route_hints(&invoice.route_hints())?;
         let recipient = self.recipient_decoder.decode(&pubkey, &route_hints);
 
+        let network = match invoice.currency() {
+            Currency::Bitcoin => "Mainnet",
+            Currency::BitcoinTestnet => "Testnet",
+            Currency::Regtest => "Regtest",
+            Currency::Simnet => "Simnet",
+            Currency::Signet => "Signet",
+        };
+
         let details = InvoiceDetails {
+            network,
             description,
             amount_msat: invoice.amount_milli_satoshis(),
         };

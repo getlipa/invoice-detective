@@ -29,4 +29,3 @@ it is reasonable to conclude that the recipient is utilizing the non-custodial *
 - [ ] move css
 - [ ] server static files
 - [ ] auto dark mode
-- [ ] footer is wider on mobile screen than it should be
