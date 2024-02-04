@@ -121,7 +121,7 @@
 		  <form class="form" action="#" method="post" onsubmit="redirectToInputValue(); return false;">
 			<label for="invoiceInput">BOLT-11 Invoice:</label>
 			<br/>
-			<textarea rows="6" id="invoiceInput" name="invoice" required>{{ invoice | trim }}</textarea>
+			<textarea rows="6" id="invoiceInput" name="invoice" placeholder="lnbc…" required>{{ invoice | trim }}</textarea>
 			<br/>
 			<input type="submit" value="Submit" />
 		  </form>

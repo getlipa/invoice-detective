@@ -22,7 +22,7 @@ it is reasonable to conclude that the recipient is utilizing the non-custodial *
 ### Limitations
 
 ## TODOs
-- [ ] detect Network
+- [X] detect Network
 - [ ] handle errors
 - [ ] use tera functions
 - [ ] display more details (expritration time)

@@ -85,7 +85,7 @@
 		  <form class="form" action="#" method="post" onsubmit="redirectToInputValue(); return false;">
 			<label for="invoiceInput">BOLT-11 Invoice:</label>
 			<br/>
-			<textarea rows="6" id="invoiceInput" name="invoice" required></textarea>
+			<textarea rows="6" id="invoiceInput" name="invoice" placeholder="lnbc…" required></textarea>
 			<br/>
 			<input type="submit" value="Submit" />
 		  </form>
@@ -93,21 +93,20 @@
 	  </div>
 
       <div class="card">
+		<div class="card-header">📖 About</div>
 		<div class="card-body">
-		  <div class="card-header">📖 About</div>
-		  <div class="card-body">
 Invoice Detective is a Rust library and a service designed to deduce
 the recipient of a lightning payment. By looking at the details of the
 provided BOLT-11 lightning invoice and leveraging some knowledge of the
 lightning network graph. Invoice Detective identifies whether the payee
 is a user of a non-custodial wallet, custodial exchange, or something
 else.
-		  </div>
 		</div>
+	  </div>
 
+	  <div class="card">
+		<div class="card-header">🔧 How it works</div>
 		<div class="card-body">
-		  <div class="card-header">🔧 How it works</div>
-		  <div class="card-body">
 <p>A lightning invoice is a set of payment instructions which has the
 destination as a public key of the recipient node. If it is a well known
 node like <a
