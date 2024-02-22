@@ -1,208 +1,78 @@
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Invoice Detective</title>
-    <style>
-      body {
-          margin: 0;
-          padding: 0;
-          font-family: Arial, sans-serif;
-      }
+{% extends "base" %}
 
-      header {
-          background-color: #333;
-          color: #fff;
-          text-align: center;
-          padding: 0.1em;
-      }
-	  header a {
-          color: #fff;
-		  text-decoration: none;
-	  }
+{% block invoice %}{{ invoice | trim }}{% endblock invoice %}
 
-      main {
-          padding: 20px;
-      }
+{% block body %}
+<div class="card">
+  <div class="card-header">🔎 Investigative findings</div>
+  <div class="card-body">
+	{% if network != "Mainnet" %}
+	<div class="warning-container">
+	  <span class="warning-icon">&#9888;</span>
+	  <h2>Warning</h2>
+	  <p>Recipient detection is implemented only for <b>Mainnet</b>.</p>
+	</div>
+	{% else %}
+	<p>
+	  {{ custody }} {{ service }}
+	  {% if name %} <b>{{ name }}</b> {% endif %}
+	  {% if id %} with id <b>{{ id }}</b> {% endif %}
+	</p>
+	{% endif %}
+  </div>
+</div>
+<div class="card">
+  <div class="card-header">🗃️ Evidences</div>
+  <div class="card-body">
+    <p>
+      Pay to
+      {% if payee.is_announced %}
+      public node
+      <a href="{{ mempool_space_base_url }}/{{ payee.pubkey }}" target="_blank">{{ payee.alias }}&nbsp;🡵</a>
+      {% else %}
+      private node <b>{{ payee.pubkey }}</b>
+      {% endif %}
+    </p>
+    <ul>
+      {% for hint in route_hints %}
+      <li>
+        via
+        {% for hop in hint %}
+        {% if hop.is_announced %}
+        public node
+        <a href="{{ mempool_space_base_url }}/{{ hop.pubkey }}" target="_blank">{{ hop.alias }}&nbsp;🡵</a>
+        {% else %}
+        private node <b>{{ hop.pubkey }}</b>
+        {% endif %}
+        {% endfor %}
+      </li>
+      {% endfor %}
+    </ul>
+  </div>
+</div>
+<div class="card">
+  <div class="card-header">📋 Details</div>
+  <div class="card-body">
+	<table>
+	  <tr>
+		<td class="leftTableColumn">Network</td>
+		<td> {{ network }} </tb>
+      </tr>
+      <tr>
+		<td class="leftTableColumn">Amount</td>
+		<td>{% if amount %} {{ amount }} {% else %} <span class="empty">empty</span> {% endif %}</td>
+	  </tr>
+      <tr>
+		<td class="leftTableColumn">Description</td>
+		<td>
+		  {% if description %} {{ description }} {% else %} <span class="empty">empty</span> {% endif %}
+		</td>
+	  </tr>
+    </table>
+  </div>
+</div>
 
-      footer {
-          background-color: #333;
-          color: #fff;
-          text-align: center;
-          padding-top: 1em;
-          padding-bottom: 1em;
-          bottom: 0;
-          width: 100%;
-      }
-	  footer a {
-		  color: #55f;
-	  }
+<br/>
+<div><a href="/">← back</a></div>
 
-      .card {
-          border: 1px solid #ccc;
-          overflow: hidden;
-          box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-      }
-
-      .card-header {
-          background-color: #7b7b7b;
-          color: #fff;
-          padding: 10px;
-          text-align: left;
-          font-size: 120%;
-          font-weight: bold;
-      }
-
-      .card-body {
-          padding: 10px;
-      }
-
-      .invoice {
-          word-wrap: break-word;
-      }
-
-	  .form {
-		  text-align: center;
-	  }
-
-	  table {
-          border-collapse: collapse;
-          width: 100%;
-      }
-      th, td {
-          border: 1px solid #ddd;
-          padding: 8px;
-          text-align: left;
-      }
-	  .leftTableColumn {
-          text-align: right;
-	      width: 10px;
-	  }
-	  .empty {
-          color: #555;
-		  font-style: italic;
-	  }
-
-	  .warning-container {
-            background-color: #ffc107;
-            border: 2px solid #ffca28;
-            border-radius: 5px;
-            padding: 5px;
-            text-align: center;
-            max-width: 400px;
-            width: 100%;
-        }
-
-      .warning-icon {
-            font-size: 36px;
-            color: #ff9800;
-      }
-	  #invoiceInput {
-          width: 100%;
-      }
-	</style>
-    <script>
-      function redirectToInputValue() {
-          var invoice = document.getElementById('invoiceInput').value.trim();
-          window.location.href = '/' + encodeURIComponent(invoice);
-      }
-    </script>
-  </head>
-
-  <body>
-	<header>
-      <h1><a href="/">🕵️‍ Invoice Detective</a></h1>
-	</header>
-
-	<main>
-      <div class="card">
-		<div class="card-body">
-		  <form class="form" action="#" method="post" onsubmit="redirectToInputValue(); return false;">
-			<label for="invoiceInput">BOLT-11 Invoice:</label>
-			<br/>
-			<textarea rows="6" id="invoiceInput" name="invoice" placeholder="lnbc…" required>{{ invoice | trim }}</textarea>
-			<br/>
-			<input type="submit" value="Submit" />
-		  </form>
-		</div>
-	  </div>
-      <div class="card">
-		<div class="card-header">🔎 Investigative findings</div>
-		<div class="card-body">
-		  {% if network != "Mainnet" %}
-		  <div class="warning-container">
-			<span class="warning-icon">&#9888;</span>
-			<h2>Warning</h2>
-			<p>Recipient detection is implemented only for <b>Mainnet</b>.</p>
-		  </div>
-		  {% else %}
-		  <p>
-			{{ custody }} {{ service }}
-			{% if name %} <b>{{ name }}</b> {% endif %}
-			{% if id %} with id <b>{{ id }}</b> {% endif %}
-		  </p>
-		  {% endif %}
-		</div>
-      </div>
-      <div class="card">
-		<div class="card-header">🗃️ Evidences</div>
-		<div class="card-body">
-          <p>
-            Pay to
-            {% if payee.is_announced %}
-            public node
-            <a href="{{ mempool_space_base_url }}/{{ payee.pubkey }}" target="_blank">{{ payee.alias }}&nbsp;🡵</a>
-            {% else %}
-            private node <b>{{ payee.pubkey }}</b>
-            {% endif %}
-          </p>
-          <ul>
-            {% for hint in route_hints %}
-            <li>
-              via
-              {% for hop in hint %}
-              {% if hop.is_announced %}
-              public node
-              <a href="{{ mempool_space_base_url }}/{{ hop.pubkey }}" target="_blank">{{ hop.alias }}&nbsp;🡵</a>
-              {% else %}
-              private node <b>{{ hop.pubkey }}</b>
-              {% endif %}
-              {% endfor %}
-            </li>
-            {% endfor %}
-          </ul>
-        </div>
-      </div>
-      <div class="card">
-		<div class="card-header">📋 Details</div>
-		<div class="card-body">
-		  <table>
-			<tr>
-			  <td class="leftTableColumn">Network</td>
-			  <td> {{ network }} </tb>
-			</tr>
-			<tr>
-			  <td class="leftTableColumn">Amount</td>
-			  <td>{% if amount %} {{ amount }} {% else %} <span class="empty">empty</span> {% endif %}</td>
-			</tr>
-			<tr>
-			  <td class="leftTableColumn">Description</td>
-			  <td>
-				{% if description %} {{ description }} {% else %} <span class="empty">empty</span> {% endif %}
-			  </td>
-			</tr>
-		  </table>
-		</div>
-      </div>
-
-	  <br/>
-	  <div><a href="/">← back</a></div>
-
-    </main>
-
-	<footer>
-	  <a href="https://github.com/andrei-21/invoice-detective">Github page</a>
-	</footer>
-  </body>
-</html>
+{% endblock body %}

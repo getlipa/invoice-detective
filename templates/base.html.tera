@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Invoice Detective</title>
+    <style>
+      body {
+          margin: 0;
+          padding: 0;
+          font-family: Arial, sans-serif;
+      }
+
+      header {
+          background-color: #333;
+          color: #fff;
+          text-align: center;
+          padding: 0.1em;
+      }
+
+      main {
+          padding: 20px;
+      }
+
+      footer {
+          background-color: #333;
+          color: #fff;
+          text-align: center;
+          padding-top: 1em;
+          padding-bottom: 1em;
+          bottom: 0;
+          width: 100%;
+      }
+	  footer a {
+		  color: #55f;
+	  }
+
+      .card {
+          border: 1px solid #ccc;
+          overflow: hidden;
+          box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      }
+
+      .card-header {
+          background-color: #7b7b7b;
+          color: #fff;
+          padding: 10px;
+          text-align: left;
+          font-size: 120%;
+          font-weight: bold;
+      }
+
+      .card-body {
+          padding: 10px;
+      }
+
+	  .form {
+		  text-align: center;
+	  }
+
+	  #invoiceInput {
+          width: 100%;
+      }
+
+      body {
+          margin: 0;
+          padding: 0;
+          font-family: Arial, sans-serif;
+      }
+
+      header {
+          background-color: #333;
+          color: #fff;
+          text-align: center;
+          padding: 0.1em;
+      }
+	  header a {
+          color: #fff;
+		  text-decoration: none;
+	  }
+
+      main {
+          padding: 20px;
+      }
+
+      footer {
+          background-color: #333;
+          color: #fff;
+          text-align: center;
+          padding-top: 1em;
+          padding-bottom: 1em;
+          bottom: 0;
+          width: 100%;
+      }
+	  footer a {
+		  color: #55f;
+	  }
+
+      .card {
+          border: 1px solid #ccc;
+          overflow: hidden;
+          box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      }
+
+      .card-header {
+          background-color: #7b7b7b;
+          color: #fff;
+          padding: 10px;
+          text-align: left;
+          font-size: 120%;
+          font-weight: bold;
+      }
+
+      .card-body {
+          padding: 10px;
+      }
+
+      .invoice {
+          font-size: 120%;
+          word-wrap: break-word;
+      }
+
+	  table {
+          border-collapse: collapse;
+          width: 100%;
+      }
+      th, td {
+          border: 1px solid #ddd;
+          padding: 8px;
+          text-align: left;
+      }
+	  .leftTableColumn {
+          text-align: right;
+	      width: 10px;
+	  }
+	  .empty {
+          color: #555;
+		  font-style: italic;
+	  }
+	  .warning-container {
+            background-color: #ffc107;
+            border: 2px solid #ffca28;
+            border-radius: 5px;
+            padding: 5px;
+            text-align: center;
+            max-width: 400px;
+            width: 100%;
+        }
+      .warning-icon {
+            font-size: 36px;
+            color: #ff9800;
+      }
+    </style>
+    <script>
+      function redirectToInputValue() {
+          var invoice = document.getElementById('invoiceInput').value.trim();
+          window.location.href = '/' + encodeURIComponent(invoice);
+      }
+    </script>
+  </head>
+
+  <body>
+	<header>
+      <h1><a href="/">🕵️‍ Invoice Detective</a></h1>
+	</header>
+
+	<main>
+      <div class="card">
+		<div class="card-body">
+		  <form class="form" action="#" method="post" onsubmit="redirectToInputValue(); return false;">
+			<label for="invoiceInput">BOLT-11 Invoice:</label>
+			<br/>
+			<textarea rows="6" id="invoiceInput" name="invoice" placeholder="lnbc…" required>{% block invoice %}{% endblock invoice %}</textarea>
+			<br/>
+			<input type="submit" value="Submit" />
+		  </form>
+		</div>
+	  </div>
+	  
+	  {% block body %}{% endblock body %}
+
+    </main>
+
+	<footer>
+	  <a href="https://github.com/andrei-21/invoice-detective">Github page</a>
+	</footer>
+  </body>
+</html>
