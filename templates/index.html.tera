@@ -95,12 +95,12 @@
       <div class="card">
 		<div class="card-header">📖 About</div>
 		<div class="card-body">
-Invoice Detective is a Rust library and a service designed to deduce
+<p>Invoice Detective is a Rust library and a service designed to deduce
 the recipient of a lightning payment. By looking at the details of the
 provided BOLT-11 lightning invoice and leveraging some knowledge of the
 lightning network graph. Invoice Detective identifies whether the payee
 is a user of a non-custodial wallet, custodial exchange, or something
-else.
+else.</p>
 		</div>
 	  </div>
 
