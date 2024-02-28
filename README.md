@@ -25,8 +25,10 @@ it is reasonable to conclude that the recipient is utilizing the non-custodial *
 
 ## TODOs
 - [X] detect Network
-- [ ] handle errors
-- [ ] use tera functions
+- [X] handle errors
+- [X] use tera functions
+- [ ] hanlde LNURL pay
+- [ ] hanlde Lightning addresses
 - [ ] display more details (expritration time)
 - [ ] move css
 - [ ] server static files

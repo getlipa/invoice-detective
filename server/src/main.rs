@@ -9,9 +9,18 @@ fn index() -> Template {
 }
 
 #[get("/<invoice>")]
-fn invoice(invoice: &str) -> Template {
-    let invoice_detective = InvoiceDetective::new().unwrap();
-    let findings = invoice_detective.investigate(invoice).unwrap();
+fn invoice(invoice: &str) -> Result<Template, String> {
+    let invoice_detective = InvoiceDetective::new()
+        .map_err(|e| format!("Failed to initialize InvoiceDetective: {e}"))?;
+    let findings = match invoice_detective.investigate(invoice) {
+        Ok(findings) => findings,
+        Err(e) => {
+            return Ok(Template::render(
+                "invoice",
+                context! { invoice, error: e.to_string() },
+            ))
+        }
+    };
 
     let recipient = findings.recipient;
     let payee = findings.payee;
@@ -44,10 +53,10 @@ fn invoice(invoice: &str) -> Template {
     let network = findings.details.network;
 
     let mempool_space_base_url = "https://mempool.space/lightning/node";
-    Template::render(
+    Ok(Template::render(
         "invoice",
         context! { amount, network, description, invoice, mempool_space_base_url, route_hints, payee, custody, service, name, id },
-    )
+    ))
 }
 
 fn format_msat(msat: Option<u64>) -> String {

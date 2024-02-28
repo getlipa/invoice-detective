@@ -5,66 +5,76 @@
 
 {% block body %}
 
-{{ macros::open_card(title="🔎 Investigative findings") }}
-{% if network != "Mainnet" %}
-<div class="warning-container">
-  <span class="warning-icon">&#9888;</span>
-  <h2>Warning</h2>
-  <p>Recipient detection is implemented only for <b>Mainnet</b>.</p>
-</div>
+{% if error %}
+
+  {{ macros::open_card(title="💥 Error") }}
+    {{ error }}
+  {{ macros::close_card() }}
+
 {% else %}
-<p>
-  {{ custody }} {{ service }}
-  {% if name %} <b>{{ name }}</b> {% endif %}
-  {% if id %} with id <b>{{ id }}</b> {% endif %}
-</p>
-{% endif %}
-{{ macros::close_card() }}
 
-{{ macros::open_card(title="🗃️ Evidences") }}
-<p>
-  Pay to
-  {% if payee.is_announced %}
-    public node
-    <a href="{{ mempool_space_base_url }}/{{ payee.pubkey }}" target="_blank">{{ payee.alias }}&nbsp;🡵</a>
+  {{ macros::open_card(title="🔎 Investigative findings") }}
+  {% if network != "Mainnet" %}
+    <div class="warning-container">
+      <span class="warning-icon">&#9888;</span>
+      <h2>Warning</h2>
+      <p>Recipient detection is implemented only for <b>Mainnet</b>.</p>
+    </div>
   {% else %}
-    private node <b>{{ payee.pubkey }}</b>
+    <p>
+      {{ custody }} {{ service }}
+      {% if name %} <b>{{ name }}</b> {% endif %}
+      {% if id %} with id <b>{{ id }}</b> {% endif %}
+    </p>
   {% endif %}
-</p>
-<ul>
-  {% for hint in route_hints %}
-    <li>
-      via
-      {% for hop in hint %}
-        {% if hop.is_announced %}
-          public node <a href="{{ mempool_space_base_url }}/{{ hop.pubkey }}" target="_blank">{{ hop.alias }}&nbsp;🡵</a>
-        {% else %}
-          private node <b>{{ hop.pubkey }}</b>
-        {% endif %}
-      {% endfor %}
-    </li>
-  {% endfor %}
-</ul>
-{{ macros::close_card() }}
+  {{ macros::close_card() }}
+  
+  {{ macros::open_card(title="🗃️ Evidences") }}
+  <p>
+    Pay to
+    {% if payee.is_announced %}
+      public node
+      <a href="{{ mempool_space_base_url }}/{{ payee.pubkey }}" target="_blank">{{ payee.alias }}&nbsp;🡵</a>
+    {% else %}
+      private node <b>{{ payee.pubkey }}</b>
+    {% endif %}
+  </p>
+  <ul>
+    {% for hint in route_hints %}
+      <li>
+        via
+        {% for hop in hint %}
+          {% if hop.is_announced %}
+            public node <a href="{{ mempool_space_base_url }}/{{ hop.pubkey }}" target="_blank">{{ hop.alias }}&nbsp;🡵</a>
+          {% else %}
+            private node <b>{{ hop.pubkey }}</b>
+          {% endif %}
+        {% endfor %}
+      </li>
+    {% endfor %}
+  </ul>
+  {{ macros::close_card() }}
+  
+  {{ macros::open_card(title="📋 Details") }}
+  <table>
+    <tr>
+      <td class="leftTableColumn">Network</td>
+      <td> {{ network }} </tb>
+      </tr>
+    <tr>
+      <td class="leftTableColumn">Amount</td>
+      <td>{% if amount %} {{ amount }} {% else %} <span class="empty">empty</span> {% endif %}</td>
+    </tr>
+    <tr>
+      <td class="leftTableColumn">Description</td>
+      <td>
+        {% if description %} {{ description }} {% else %} <span class="empty">empty</span> {% endif %}
+      </td>
+    </tr>
+  </table>
+  {{ macros::close_card() }}
 
-{{ macros::open_card(title="📋 Details") }}
-<table>
-  <tr>
-	<td class="leftTableColumn">Network</td>
-	<td> {{ network }} </tb>
-  </tr>
-  <tr>
-    <td class="leftTableColumn">Amount</td>
-    <td>{% if amount %} {{ amount }} {% else %} <span class="empty">empty</span> {% endif %}</td>
-  </tr>
-  <tr>
-    <td class="leftTableColumn">Description</td>
-    <td>
-      {% if description %} {{ description }} {% else %} <span class="empty">empty</span> {% endif %}
-    </td>
-  </tr>
-</table>
-{{ macros::close_card() }}
+{% endif %}
 
 <br/>
 <div><a href="/">← back</a></div>
