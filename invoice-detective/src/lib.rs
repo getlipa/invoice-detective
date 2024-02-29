@@ -1,3 +1,4 @@
+pub mod decoder;
 mod graph_database;
 mod node;
 mod recipient;
@@ -6,7 +7,6 @@ use crate::graph_database::GraphDatabase;
 pub use crate::node::Node;
 use crate::recipient::RecipientDecoder;
 pub use crate::recipient::{RecipientNode, ServiceKind};
-
 use anyhow::Result;
 use lightning_invoice::{Bolt11Invoice, Currency, RouteHint};
 

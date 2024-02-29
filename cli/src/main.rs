@@ -1,13 +1,15 @@
 use anyhow::{anyhow, Result};
 use colored::Colorize;
+use invoice_detective::decoder::{decode, resolve};
 use invoice_detective::{InvoiceDetective, Node, RecipientNode, ServiceKind};
 use std::env;
 use thousands::Separable;
 
-fn main() -> Result<()> {
-    let invoice = env::args()
-        .nth(1)
-        .ok_or(anyhow!("BOLT-11 invoice is required"))?;
+#[tokio::main]
+async fn main() -> Result<()> {
+    let input = env::args().nth(1).ok_or(anyhow!("Input is required"))?;
+    let decoded_data = decode(&input)?;
+    let invoice = resolve(decoded_data).await?;
 
     let invoice_detective = InvoiceDetective::new()?;
     let findings = invoice_detective.investigate(&invoice)?;
