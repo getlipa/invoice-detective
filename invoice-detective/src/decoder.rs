@@ -1,4 +1,5 @@
-use anyhow::{bail, Result};
+use anyhow::{anyhow, bail, Result};
+use lightning::offers::offer::Offer;
 use lightning_invoice::Bolt11Invoice;
 use lnurl::lightning_address::LightningAddress;
 use lnurl::lnurl::LnUrl;
@@ -10,50 +11,49 @@ use std::str::FromStr;
 use std::time::Duration;
 
 #[derive(Debug)]
-pub enum DecodedDataInner {
+#[allow(clippy::large_enum_variant)]
+pub enum DecodedData {
     Invoice(Bolt11Invoice),
-    LnUrl(LnUrl),
+    Offer(Offer),
     LightningAddress(LightningAddress),
-}
-
-#[derive(Debug)]
-pub struct DecodedData {
-    pub inner: DecodedDataInner,
+    LnUrl(LnUrl),
 }
 
 pub fn decode(input: &str) -> Result<DecodedData> {
-    println!("Input: {input}");
-    let input = input.trim();
-    let input = input
-        .strip_prefix("lightning:")
-        .unwrap_or(input)
-        .to_lowercase();
+    println!("    Input: {input}");
+    let input = input.trim().to_lowercase();
+    let input = input.strip_prefix("lightning:").unwrap_or(&input);
     println!("Sanitized: {input}");
-    let inner = if input.contains('@') {
+    let filtered_input: String = input
+        .chars()
+        .filter(|c| *c != '+' && !c.is_whitespace())
+        .collect();
+
+    let decoded_data = if input.contains('@') {
         println!("Decoding as a lightning address");
-        let address = LightningAddress::from_str(&input)?;
-        DecodedDataInner::LightningAddress(address)
+        let address = LightningAddress::from_str(input)?;
+        DecodedData::LightningAddress(address)
     } else if input.starts_with("lnurl") {
-        let lnurl = LnUrl::from_str(&input)?;
-        DecodedDataInner::LnUrl(lnurl)
+        // TODO: Support LUD-17: Protocol schemes and raw (non bech32-encoded) URLs.
+        println!("Decoding as LNURL");
+        let lnurl = LnUrl::from_str(input)?;
+        DecodedData::LnUrl(lnurl)
+    } else if filtered_input.starts_with("lno") {
+        println!("Decoding as BOLT12 invoice");
+        let offer = Offer::from_str(input).map_err(|e| anyhow!("{e:?}"))?;
+        DecodedData::Offer(offer)
     } else if input.starts_with("ln") {
+        println!("Decoding as BOLT11 invoice");
         let invoice = input.parse::<Bolt11Invoice>()?;
-        DecodedDataInner::Invoice(invoice)
+        DecodedData::Invoice(invoice)
     } else {
+        // TODO: Support BIP-21.
         bail!("Input is not recognized");
     };
-    Ok(DecodedData { inner })
+    Ok(decoded_data)
 }
 
-pub async fn resolve(data: DecodedData) -> Result<String> {
-    match data.inner {
-        DecodedDataInner::Invoice(invoice) => Ok(invoice.to_string()),
-        DecodedDataInner::LnUrl(lnurl) => resolve_lnurl(lnurl).await,
-        DecodedDataInner::LightningAddress(address) => resolve_lnurl(address.lnurl()).await,
-    }
-}
-
-async fn resolve_lnurl(lnurl: LnUrl) -> Result<String> {
+pub async fn resolve_lnurl(lnurl: LnUrl) -> Result<String> {
     println!("Quering {}", lnurl.url);
     let client = reqwest::Client::builder()
         .timeout(Duration::from_secs(5))

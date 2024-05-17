@@ -8,9 +8,11 @@ pub use crate::node::Node;
 use crate::recipient::RecipientDecoder;
 pub use crate::recipient::{RecipientNode, ServiceKind};
 use anyhow::Result;
+use bitcoin::secp256k1::PublicKey;
+use lightning::offers::offer::Offer;
 use lightning_invoice::{Bolt11Invoice, Currency, RouteHint};
 
-#[derive(Debug)]
+#[derive(Debug, Default)]
 pub struct InvoiceDetails {
     pub network: &'static str,
     pub description: String,
@@ -45,6 +47,10 @@ impl InvoiceDetective {
 
     pub fn investigate(&self, invoice: &str) -> Result<InvestigativeFindings> {
         let invoice = invoice.trim().parse::<Bolt11Invoice>()?;
+        self.investigate_bolt11(invoice)
+    }
+
+    pub fn investigate_bolt11(&self, invoice: Bolt11Invoice) -> Result<InvestigativeFindings> {
         let description = invoice.description().to_string();
         let pubkey = invoice
             .payee_pub_key()
@@ -77,6 +83,27 @@ impl InvoiceDetective {
         })
     }
 
+    pub fn investigate_bolt12(&self, offer: Offer) -> Result<InvestigativeFindings> {
+        let destination = match offer.paths().first() {
+            Some(first) => Destination::Blinded {
+                introduction_node_id: first.introduction_node_id,
+            },
+            None => Destination::Node(offer.signing_pubkey()),
+        };
+        println!("Destination: {destination:?}");
+        let pubkey = destination.pubkey().to_string();
+        let payee = self.graph_database.query(pubkey.clone())?;
+        let recipient = self.recipient_decoder.decode(&pubkey, &Vec::new());
+
+        let details = InvoiceDetails::default();
+        Ok(InvestigativeFindings {
+            recipient,
+            payee,
+            route_hints: Vec::new(),
+            details,
+        })
+    }
+
     fn process_route_hints(&self, route_hints: &Vec<RouteHint>) -> Result<Vec<Vec<Node>>> {
         let mut result = Vec::new();
         for hint in route_hints {
@@ -88,5 +115,22 @@ impl InvoiceDetective {
             result.push(x);
         }
         Ok(result)
+    }
+}
+
+#[derive(Debug)]
+enum Destination {
+    Node(PublicKey),
+    Blinded { introduction_node_id: PublicKey },
+}
+
+impl Destination {
+    fn pubkey(&self) -> &PublicKey {
+        match self {
+            Destination::Node(key) => key,
+            Destination::Blinded {
+                introduction_node_id,
+            } => introduction_node_id,
+        }
     }
 }

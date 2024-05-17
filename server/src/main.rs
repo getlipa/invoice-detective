@@ -62,6 +62,7 @@ fn invoice(invoice: &str) -> Result<Template, String> {
 fn format_msat(msat: Option<u64>) -> String {
     match msat {
         None => String::new(),
+        Some(1000) => "1 sat".to_string(),
         Some(msat) if msat % 1000 == 0 => format!("{} sats", (msat / 1000).separate_with_commas()),
         Some(msat) => {
             let sat = msat / 1000;

@@ -1,7 +1,9 @@
 use anyhow::{anyhow, Result};
 use colored::Colorize;
-use invoice_detective::decoder::{decode, resolve};
-use invoice_detective::{InvoiceDetective, Node, RecipientNode, ServiceKind};
+use invoice_detective::decoder::{decode, resolve_lnurl, DecodedData};
+use invoice_detective::{
+    InvestigativeFindings, InvoiceDetective, Node, RecipientNode, ServiceKind,
+};
 use std::env;
 use thousands::Separable;
 
@@ -9,11 +11,35 @@ use thousands::Separable;
 async fn main() -> Result<()> {
     let input = env::args().nth(1).ok_or(anyhow!("Input is required"))?;
     let decoded_data = decode(&input)?;
-    let invoice = resolve(decoded_data).await?;
 
     let invoice_detective = InvoiceDetective::new()?;
-    let findings = invoice_detective.investigate(&invoice)?;
 
+    match decoded_data {
+        DecodedData::Invoice(invoice) => {
+            let findings = invoice_detective.investigate_bolt11(invoice)?;
+            print_findings(findings)
+        }
+        DecodedData::Offer(offer) => {
+            let findings = invoice_detective.investigate_bolt12(offer)?;
+            print_findings(findings)
+        }
+        DecodedData::LnUrl(lnurl) => {
+            let invoice = resolve_lnurl(lnurl).await?;
+            println!("Investigating invoice: {invoice}");
+            let findings = invoice_detective.investigate(&invoice)?;
+            print_findings(findings)
+        }
+        DecodedData::LightningAddress(address) => {
+            let invoice = resolve_lnurl(address.lnurl()).await?;
+            println!("Investigating invoice: {invoice}");
+            let findings = invoice_detective.investigate(&invoice)?;
+            print_findings(findings)
+        }
+    };
+    Ok(())
+}
+
+fn print_findings(findings: InvestigativeFindings) {
     println!("🔎 {}", " Investigative findings ".reversed());
     let recipient = format_recipient_node(&findings.recipient);
     println!("   Recipient: {recipient}");
@@ -37,13 +63,12 @@ async fn main() -> Result<()> {
     println!("    Network: {}", details.network);
     println!("     Amount: {amount}");
     println!("Desctiption: {}", details.description.italic());
-
-    Ok(())
 }
 
 fn format_msat(msat: Option<u64>) -> String {
     match msat {
         None => "empty".to_string(),
+        Some(1000) => "1 sat".to_string(),
         Some(msat) if msat % 1000 == 0 => format!("{} sats", (msat / 1000).separate_with_commas()),
         Some(msat) => {
             let sat = msat / 1000;
