@@ -1,6 +1,7 @@
 use invoice_detective::{InvoiceDetective, RecipientNode, ServiceKind};
-use rocket::{get, launch, routes};
+use rocket::{get, launch, routes, Config};
 use rocket_dyn_templates::{context, Template};
+use std::net::Ipv4Addr;
 use thousands::Separable;
 
 #[get("/")]
@@ -75,8 +76,13 @@ fn format_msat(msat: Option<u64>) -> String {
 
 #[launch]
 fn rocket() -> _ {
-    // TODO: Customize template directory.
-    rocket::build()
+    let config = Config {
+        port: 8000,
+        address: Ipv4Addr::new(0, 0, 0, 0).into(),
+        log_level: rocket::config::LogLevel::Normal,
+        ..Config::debug_default()
+    };
+    rocket::custom(&config)
         .mount("/", routes![index, invoice])
         .attach(Template::fairing())
 }

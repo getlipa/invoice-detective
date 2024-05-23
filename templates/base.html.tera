@@ -182,7 +182,9 @@
     </main>
 
 	<footer>
-	  <a href="https://github.com/andrei-21/invoice-detective">Github page</a>
+	  Made by
+	  <a href="https://lipa.swiss">lipa</a> —
+	  <a href="https://github.com/getlipa/invoice-detective">Github page</a>
 	</footer>
   </body>
 </html>
