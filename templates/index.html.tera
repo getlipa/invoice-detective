@@ -17,7 +17,7 @@
 <p>
   A lightning invoice is a set of payment instructions which has the
   destination as a public key of the recipient node. If it is a well known
-  node like <a href="https://mempool.space/lightning/node/035e4ff418fc8b5554c5d9eea66396c227bd429a3251c8cbc711002ba215bfc226">WalletOfSatoshi.com</a>
+  node like <a href="https://mempool.space/lightning/node/035e4ff418fc8b5554c5d9eea66396c227bd429a3251c8cbc711002ba215bfc226" target="_blank">WalletOfSatoshi.com🡵</a>
   it is reasonable to infer that the recipient is a user of the custodial
   <strong>Wallet of Satoshi</strong>.
 </p>
@@ -26,7 +26,7 @@
   where the recipient node has no announced channels nor a reachable
   address, lightning invoices incorporate additional routing details, such
   as the LSP node public key. When the LSP is associated with a well known
-  node like <a href="https://mempool.space/lightning/node/03864ef025fde8fb587d989186ce6a4a186895ee44a926bfc370e2c366597a3f8f">ACINQ</a>,
+  node like <a href="https://mempool.space/lightning/node/03864ef025fde8fb587d989186ce6a4a186895ee44a926bfc370e2c366597a3f8f" target="_blank">ACINQ🡵</a>,
   it is reasonable to conclude that the recipient is utilizing the
   non-custodial <strong>Phoenix</strong> wallet.
 </p>
