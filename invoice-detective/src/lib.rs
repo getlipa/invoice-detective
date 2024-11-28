@@ -9,6 +9,8 @@ use crate::recipient::RecipientDecoder;
 pub use crate::recipient::{RecipientNode, ServiceKind};
 use anyhow::Result;
 use bitcoin::secp256k1::PublicKey;
+use lightning::blinded_path::message::BlindedMessagePath;
+use lightning::blinded_path::IntroductionNode;
 use lightning::offers::offer::Offer;
 use lightning_invoice::{Bolt11Invoice, Currency, RouteHint};
 
@@ -84,11 +86,18 @@ impl InvoiceDetective {
     }
 
     pub fn investigate_bolt12(&self, offer: Offer) -> Result<InvestigativeFindings> {
-        let destination = match offer.paths().first() {
-            Some(first) => Destination::Blinded {
-                introduction_node_id: first.introduction_node_id,
+        let introduction_node = offer
+            .paths()
+            .first()
+            .map(BlindedMessagePath::introduction_node);
+        let destination = match introduction_node {
+            Some(IntroductionNode::NodeId(introduction_node_id)) => Destination::Blinded {
+                introduction_node_id: *introduction_node_id,
             },
-            None => Destination::Node(offer.signing_pubkey()),
+            Some(IntroductionNode::DirectedShortChannelId(_direction, _channel_id)) => {
+                panic!("IntroductionNode::DirectedShortChannelId")
+            }
+            None => Destination::Node(offer.signing_pubkey().expect("Offer signing pubkey")),
         };
         println!("Destination: {destination:?}");
         let pubkey = destination.pubkey().to_string();

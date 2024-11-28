@@ -8,8 +8,8 @@ name = "invoice_detective"
 
 [dependencies]
 anyhow = "1.0.79"
-bitcoin = { version = "=0.30.2", default-features = false }
-lightning = { version = "0.0.121", default-features = false }
+bitcoin = { version = "=0.32.2", default-features = false }
+lightning = { version = "0.0.125" }
 lightning-invoice = "0.29.0"
 lnurl-rs = { version = "0.4.1", default-features = false }
 reqwest = { version = "0.11.24", default-features = false, features = ["rustls-tls"] }
