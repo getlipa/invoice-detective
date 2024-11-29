@@ -1,13 +1,15 @@
+mod chain_hash;
 pub mod decoder;
 mod graph_database;
 mod node;
+pub mod offer_details;
 mod recipient;
 
 use crate::graph_database::GraphDatabase;
 pub use crate::node::Node;
 use crate::recipient::RecipientDecoder;
 pub use crate::recipient::{RecipientNode, ServiceKind};
-use anyhow::Result;
+use anyhow::{anyhow, Result};
 use bitcoin::secp256k1::PublicKey;
 use lightning::blinded_path::message::BlindedMessagePath;
 use lightning::blinded_path::IntroductionNode;
@@ -95,11 +97,14 @@ impl InvoiceDetective {
                 introduction_node_id: *introduction_node_id,
             },
             Some(IntroductionNode::DirectedShortChannelId(_direction, _channel_id)) => {
-                panic!("IntroductionNode::DirectedShortChannelId")
+                unimplemented!();
             }
-            None => Destination::Node(offer.signing_pubkey().expect("Offer signing pubkey")),
+            None => Destination::Node(
+                offer
+                    .signing_pubkey()
+                    .ok_or(anyhow!("Blinded path and signing key are empty"))?,
+            ),
         };
-        println!("Destination: {destination:?}");
         let pubkey = destination.pubkey().to_string();
         let payee = self.graph_database.query(pubkey.clone())?;
         let recipient = self.recipient_decoder.decode(&pubkey, &Vec::new());

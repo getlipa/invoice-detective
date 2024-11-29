@@ -9,6 +9,8 @@ name = "invoice_detective"
 [dependencies]
 anyhow = "1.0.79"
 bitcoin = { version = "=0.32.2", default-features = false }
+chrono = "0.4.38"
+iso_currency = "0.5.1"
 lightning = { version = "0.0.125" }
 lightning-invoice = "0.29.0"
 lnurl-rs = { version = "0.4.1", default-features = false }

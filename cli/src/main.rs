@@ -1,6 +1,7 @@
 use anyhow::{anyhow, Result};
-use colored::Colorize;
+use colored::{ColoredString, Colorize};
 use invoice_detective::decoder::{decode, resolve_lnurl, DecodedData};
+use invoice_detective::offer_details::{IntroductionNode, OfferDetails};
 use invoice_detective::{
     InvestigativeFindings, InvoiceDetective, Node, RecipientNode, ServiceKind,
 };
@@ -20,6 +21,8 @@ async fn main() -> Result<()> {
             print_findings(findings)
         }
         DecodedData::Offer(offer) => {
+            let offer_details = OfferDetails::from(offer.clone());
+            print_offer_details(offer_details);
             let findings = invoice_detective.investigate_bolt12(offer)?;
             print_findings(findings)
         }
@@ -37,6 +40,32 @@ async fn main() -> Result<()> {
         }
     };
     Ok(())
+}
+
+fn print_offer_details(d: OfferDetails) {
+    println!("📋 {}", " Details ".reversed());
+    println!("         Id: {}", d.id);
+    println!("     Chains: {}", d.chains.join(", "));
+    println!("     Amount: {}", format_option(&d.amount));
+    println!("   Quantity: {}", d.supported_quantity);
+    println!("Description: {}", format_option(&d.description));
+    println!("     Issuer: {}", format_option(&d.issuer));
+    let expires_at = d.expires_at.map(|d| d.to_rfc2822());
+    println!(" Expires at: {}", format_option(&expires_at));
+    println!("   Metadata: {}", format_option(&d.metadata));
+    println!("Sign pubkey: {}", format_option(&d.signing_pubkey));
+    for (i, path) in d.paths.iter().enumerate() {
+        println!(
+            "   Paths #{i}: Intro {}",
+            format_introduction_node(&path.introduction_node)
+        );
+        println!("               with blinding {}", path.blinding_point);
+        for (i, hop) in path.hops.iter().enumerate() {
+            println!("             Hop #{i} {}", hop.node_id);
+            println!("                    with data {}", hop.encrypted_payload);
+        }
+    }
+    println!();
 }
 
 fn print_findings(findings: InvestigativeFindings) {
@@ -65,6 +94,13 @@ fn print_findings(findings: InvestigativeFindings) {
     println!("Desctiption: {}", details.description.italic());
 }
 
+fn format_option<T: ToString>(value: &Option<T>) -> ColoredString {
+    match value {
+        Some(value) => value.to_string().into(),
+        None => "empty".italic().dimmed(),
+    }
+}
+
 fn format_msat(msat: Option<u64>) -> String {
     match msat {
         None => "empty".to_string(),
@@ -76,6 +112,14 @@ fn format_msat(msat: Option<u64>) -> String {
             let msat = msat % 1000;
             format!("{sat}.{msat:03} sats")
         }
+    }
+}
+
+fn format_introduction_node(node: &IntroductionNode) -> String {
+    match node {
+        IntroductionNode::NodeId(pubkey) => format!("Node {pubkey}"),
+        IntroductionNode::LeftEnd(channel) => format!("Left end of {channel}"),
+        IntroductionNode::RightEnd(channel) => format!("Right end of {channel}"),
     }
 }
 

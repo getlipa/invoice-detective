@@ -39,7 +39,7 @@ pub fn decode(input: &str) -> Result<DecodedData> {
         let lnurl = LnUrl::from_str(input)?;
         DecodedData::LnUrl(lnurl)
     } else if filtered_input.starts_with("lno") {
-        println!("Decoding as BOLT12 invoice");
+        println!("Decoding as BOLT12 offer");
         let offer = Offer::from_str(input).map_err(|e| anyhow!("{e:?}"))?;
         DecodedData::Offer(offer)
     } else if input.starts_with("ln") {
@@ -48,6 +48,7 @@ pub fn decode(input: &str) -> Result<DecodedData> {
         DecodedData::Invoice(invoice)
     } else {
         // TODO: Support BIP-21.
+        // TODO: Support Invoice request (BOLT12 withdraw usecase).
         bail!("Input is not recognized");
     };
     Ok(decoded_data)
