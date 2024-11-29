@@ -17,6 +17,7 @@ struct Node {
 }
 
 type NodesMap = HashMap<String, Node>;
+type EdgesMap = HashMap<u64, (String, String)>;
 
 pub fn main() -> Result<()> {
     let graph_file = env::args()
@@ -46,12 +47,12 @@ pub fn main() -> Result<()> {
         .ok_or(anyhow!("Invalid JSON: missing edges"))?;
     let edges = as_array(edges)?;
     println!("Processing edges ...");
-    process_edges(edges, &mut nodes)?;
+    let edges = process_edges(edges, &mut nodes)?;
 
     println!("Clustering ...");
 
     println!("Dumping to database {DATABASE_PATH} ...");
-    dump(&nodes)?;
+    dump(&nodes, &edges)?;
 
     println!("Done");
     Ok(())
@@ -62,14 +63,25 @@ DROP TABLE IF EXISTS nodes;
 CREATE TABLE nodes (
     id       INTEGER NOT NULL PRIMARY KEY,
     pubkey   TEXT NOT NULL,
-    alias    TEST NOT NULL,
+    alias    TEXT NOT NULL,
     capacity INTEGER NOT NULL
-);";
+);
+
+DROP TABLE IF EXISTS edges;
+CREATE TABLE edges (
+    scid       INTEGER NOT NULL PRIMARY KEY,
+    left_node  TEXT NOT NULL,
+    right_node TEXT NOT NULL
+);
+";
 const INSERT_NODE: &str = "
 INSERT INTO nodes(pubkey, alias, capacity)
 VALUES (?1, ?2, ?3)";
+const INSERT_EDGE: &str = "
+INSERT INTO edges(scid, left_node, right_node)
+VALUES (?1, ?2, ?3)";
 
-fn dump(nodes: &NodesMap) -> Result<()> {
+fn dump(nodes: &NodesMap, edges: &EdgesMap) -> Result<()> {
     let mut connection = Connection::open(DATABASE_PATH)?;
     connection.execute_batch(CREATE_DB)?;
 
@@ -78,6 +90,10 @@ fn dump(nodes: &NodesMap) -> Result<()> {
         let mut statement = transaction.prepare(INSERT_NODE)?;
         for node in nodes.values() {
             statement.execute([&node.pubkey, &node.alias, &node.capacity.to_string()])?;
+        }
+        let mut statement = transaction.prepare(INSERT_EDGE)?;
+        for (scid, (left_node, right_node)) in edges {
+            statement.execute([scid.to_string(), left_node.clone(), right_node.clone()])?;
         }
     }
     transaction.commit()?;
@@ -103,15 +119,21 @@ fn process_nodes(nodes: &json::Array) -> Result<NodesMap> {
     Ok(nodes_map)
 }
 
-fn process_edges(edges: &json::Array, nodes: &mut NodesMap) -> Result<()> {
+fn process_edges(edges: &json::Array, nodes: &mut NodesMap) -> Result<EdgesMap> {
+    let mut edges_map = EdgesMap::with_capacity(edges.len());
     for edge in edges {
         let edge = as_object(edge)?;
+        let scid: u64 = get_str(edge, "channel_id")?
+            .parse()
+            .context("channel_id is not integer")?;
         let node1 = get_str(edge, "node1_pub")?;
         let node2 = get_str(edge, "node2_pub")?;
         let capacity = get_str(edge, "capacity")?;
         let capacity: u64 = capacity
             .parse()
             .context("channel capacity is not a number")?;
+
+        edges_map.insert(scid, (node1.to_string(), node2.to_string()));
 
         if let Some(node) = nodes.get_mut(node1) {
             node.capacity += capacity;
@@ -120,7 +142,7 @@ fn process_edges(edges: &json::Array, nodes: &mut NodesMap) -> Result<()> {
             node.capacity += capacity;
         }
     }
-    Ok(())
+    Ok(edges_map)
 }
 
 fn as_array(json: &json::JsonValue) -> Result<&json::Array> {
