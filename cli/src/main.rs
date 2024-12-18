@@ -26,6 +26,9 @@ async fn main() -> Result<()> {
             let findings = invoice_detective.investigate_bolt12(offer)?;
             print_findings(findings)
         }
+        DecodedData::Refund(refund) => {
+            println!("{refund:?}")
+        }
         DecodedData::LnUrl(lnurl) => {
             let invoice = resolve_lnurl(lnurl).await?;
             println!("Investigating invoice: {invoice}");

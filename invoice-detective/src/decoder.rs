@@ -1,5 +1,6 @@
 use anyhow::{anyhow, bail, Result};
 use lightning::offers::offer::Offer;
+use lightning::offers::refund::Refund;
 use lightning_invoice::Bolt11Invoice;
 use lnurl::lightning_address::LightningAddress;
 use lnurl::lnurl::LnUrl;
@@ -15,6 +16,7 @@ use std::time::Duration;
 pub enum DecodedData {
     Invoice(Bolt11Invoice),
     Offer(Offer),
+	Refund(Refund),
     LightningAddress(LightningAddress),
     LnUrl(LnUrl),
 }
@@ -42,13 +44,16 @@ pub fn decode(input: &str) -> Result<DecodedData> {
         println!("Decoding as BOLT12 offer");
         let offer = Offer::from_str(input).map_err(|e| anyhow!("{e:?}"))?;
         DecodedData::Offer(offer)
+    } else if filtered_input.starts_with("lnr") {
+        println!("Decoding as BOLT12 refund (naked invoice request)");
+		let refund = Refund::from_str(input).map_err(|e| anyhow!("{e:?}"))?;
+		DecodedData::Refund(refund)
     } else if input.starts_with("ln") {
         println!("Decoding as BOLT11 invoice");
         let invoice = input.parse::<Bolt11Invoice>()?;
         DecodedData::Invoice(invoice)
     } else {
         // TODO: Support BIP-21.
-        // TODO: Support Invoice request (BOLT12 withdraw usecase).
         bail!("Input is not recognized");
     };
     Ok(decoded_data)
