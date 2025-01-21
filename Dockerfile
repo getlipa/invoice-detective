@@ -7,4 +7,6 @@ COPY graph.db3 .
 COPY templates/ templates/
 COPY target/release/server .
 
+USER 1000
+
 CMD ["./server"]
